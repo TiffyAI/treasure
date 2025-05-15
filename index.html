@@ -27,11 +27,11 @@
 
     @keyframes pulse {
       from { transform: translateX(-50%) scale(1); }
-      to { transform: translateX(-50%) scale(1.2); }
+      to   { transform: translateX(-50%) scale(1.2); }
     }
 
     @keyframes glow {
-      0% { filter: drop-shadow(0 0 5px #4af0f8); }
+      0%   { filter: drop-shadow(0 0 5px #4af0f8); }
       100% { filter: drop-shadow(0 0 20px gold); }
     }
 
@@ -43,8 +43,8 @@
     }
 
     @keyframes floatZoom {
-      0% { transform: scale(0.2); opacity: 0; }
-      50% { opacity: 1; }
+      0%   { transform: scale(0.2); opacity: 0; }
+      50%  { opacity: 1; }
       100% {
         transform: scale(4);
         top: 50%;
@@ -55,7 +55,7 @@
 
     #congratsBtn {
       position: absolute;
-      top: 50%;
+      top: 65%;
       left: 50%;
       transform: translate(-50%, -50%);
       background: linear-gradient(90deg, gold, #ffd700, gold);
@@ -76,12 +76,45 @@
       0%, 100% { box-shadow: 0 0 20px gold; }
       50% { box-shadow: 0 0 30px #fffacd; }
     }
+
+    #treasureMessage {
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #00eaff;
+      font-size: 22px;
+      text-align: center;
+      width: 90%;
+      font-family: 'Segoe UI', sans-serif;
+      text-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff;
+      white-space: pre-wrap;
+      overflow: hidden;
+      display: none;
+      z-index: 15;
+    }
+
+    .spark {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: radial-gradient(circle, #00ffff, transparent);
+      border-radius: 50%;
+      opacity: 0;
+      animation: flicker 1s linear forwards;
+    }
+
+    @keyframes flicker {
+      0% { transform: scale(0.5); opacity: 1; }
+      50% { transform: scale(1.5); opacity: 1; }
+      100% { transform: scale(2.5); opacity: 0; }
+    }
   </style>
 </head>
 <body>
 
   <img id="keyIcon" src="Keys.png" alt="Claim Treasure" onclick="explodeTokens()" />
-
+  <div id="treasureMessage"></div>
   <button id="congratsBtn" onclick="goToNext()">Congratulations!</button>
 
   <script>
@@ -102,8 +135,35 @@
       document.getElementById('keyIcon').style.display = 'none';
 
       setTimeout(() => {
-        document.getElementById('congratsBtn').style.display = 'block';
-      }, 3200);
+        showMessageWithTyping();
+        createSparks();
+      }, 3000);
+    }
+
+    function showMessageWithTyping() {
+      const msg = "You didn't quite hit the jackpot yet. You found 10 valuable TiffyAI tokens! Hit the button let's pay you.";
+      const msgBox = document.getElementById("treasureMessage");
+      msgBox.style.display = 'block';
+      let index = 0;
+      const typer = setInterval(() => {
+        if (index < msg.length) {
+          msgBox.innerText += msg[index++];
+        } else {
+          clearInterval(typer);
+          document.getElementById('congratsBtn').style.display = 'block';
+        }
+      }, 45);
+    }
+
+    function createSparks() {
+      for (let i = 0; i < 20; i++) {
+        const s = document.createElement('div');
+        s.className = 'spark';
+        s.style.top = Math.random() * window.innerHeight + 'px';
+        s.style.left = Math.random() * window.innerWidth + 'px';
+        s.style.animationDelay = Math.random() + 's';
+        document.body.appendChild(s);
+      }
     }
 
     function goToNext() {
